@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import {Form, Input, Space, Typography, Button, Flex, message} from 'antd'
 import FormItem from 'antd/es/form/FormItem'
 import axios from 'axios'
@@ -21,6 +21,12 @@ const Register = () => {
 
     console.log(values);
   }
+
+  useEffect(() => {
+    if(localStorage.getItem('user')){
+      navigate('/')
+    }
+  }, [navigate]);
   return (
     <>    
         <div className='register'>
@@ -35,7 +41,7 @@ const Register = () => {
             <Form.Item label="Password" name="password">
               <Input type='password'/>
             </Form.Item>
-            <Text type='secondary'>Already have an account?<Link to='/login'> Click here to Login</Link></Text>
+            <Text type='secondary'>Already have an account?<Link href='/login'> Click here to Login</Link></Text>
             <FormItem className='mt-3'>
               <Flex justify='center'>
                 <Button type='primary' htmlType='submit'>Register</Button>
