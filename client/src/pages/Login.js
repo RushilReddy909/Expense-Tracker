@@ -1,5 +1,6 @@
 import React, {useEffect} from 'react'
 import {Form, Input, Space, Typography, Button, Flex, message} from 'antd'
+import {MailOutlined} from '@ant-design/icons'
 import FormItem from 'antd/es/form/FormItem'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
@@ -30,23 +31,26 @@ const Login = () => {
     <>    
         <div className='login'>
           <Form layout='vertical' onFinish={submitHandler}>
-            <h1>Login to Account</h1>
+            <h1 style={{fontWeight: "bold"}}>Login</h1>
             <Form.Item label="Email" name="email">
-              <Input type='email'/>
+              <Space.Compact block>
+                <Input size='large' type='email'/>
+                <Button icon={<MailOutlined />} size='large'/>
+              </Space.Compact>
             </Form.Item>
             <Form.Item label="Password" name="password">
-              <Input type='password'/>
+              <Input.Password size='large'/>
             </Form.Item>
-            <Form.Item>
-                <Flex justify='center'>
-                  <Text type='secondary'>First time user?<Link href='/register'> Click here to Sign up</Link></Text>
-                </Flex>
-            </Form.Item>
-            <FormItem className='mt-3'>
-              <Flex justify='center'>
-                <Button type='primary' htmlType='submit'>Login</Button>
+            <FormItem >
+              <Flex justify='center' className='mt-3'>
+                <Button type='primary' htmlType='submit' block style={{fontWeight: "bold", borderRadius: "25px"}}>Login</Button>
               </Flex>
             </FormItem>
+            <Form.Item>
+              <Flex justify='center'>
+                <Text type='secondary'>First time user?<Link href='/register'> Click here to Sign up</Link></Text>
+              </Flex>
+            </Form.Item>
           </Form>
         </div>
     </>
