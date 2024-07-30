@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react'
-import {Form, Input, Space, Typography, Button, Flex, message} from 'antd'
+import {Form, Input, Space, Typography, Button, Flex, message, ConfigProvider} from 'antd'
 import {MailOutlined} from '@ant-design/icons'
 import FormItem from 'antd/es/form/FormItem'
 import axios from 'axios'
@@ -27,31 +27,43 @@ const Login = () => {
       navigate('/')
     }
   }, [navigate]);
+
   return (
     <>    
         <div className='login'>
-          <Form layout='vertical' onFinish={submitHandler}>
-            <h1 style={{fontWeight: "bold"}}>Login</h1>
-            <Form.Item label="Email" name="email">
-              <Space.Compact block>
-                <Input size='large' type='email'/>
-                <Button icon={<MailOutlined />} size='large'/>
-              </Space.Compact>
-            </Form.Item>
-            <Form.Item label="Password" name="password">
-              <Input.Password size='large'/>
-            </Form.Item>
-            <FormItem >
-              <Flex justify='center' className='mt-3'>
-                <Button type='primary' htmlType='submit' block style={{fontWeight: "bold", borderRadius: "25px"}}>Login</Button>
-              </Flex>
-            </FormItem>
-            <Form.Item>
-              <Flex justify='center'>
-                <Text type='secondary'>First time user?<Link href='/register'> Click here to Sign up</Link></Text>
-              </Flex>
-            </Form.Item>
-          </Form>
+        <ConfigProvider
+            theme={{
+              components: {
+                Form: {
+                  /* here is your component tokens */
+                  labelFontSize: 16,
+                },
+              },
+            }}
+          >
+            <Form layout='vertical' onFinish={submitHandler}>
+              <h1 style={{fontWeight: "bold"}}>Login</h1>
+              <Form.Item label="Email" name="email" rules={[{required: true, message: "Please enter your email"}]}>
+                <Space.Compact block>
+                  <Input size='large' type='email'/>
+                  <Button icon={<MailOutlined />} size='large'/>
+                </Space.Compact>
+              </Form.Item>
+              <Form.Item label="Password" name="password" rules={[{required: true, message: "Please enter your password"}]}>
+                <Input.Password size='large'/>
+              </Form.Item>
+              <FormItem >
+                <Flex justify='center' className='mt-3'>
+                  <Button type='primary' htmlType='submit' block style={{fontWeight: "bold", borderRadius: "25px"}}>Login</Button>
+                </Flex>
+              </FormItem>
+              <Form.Item>
+                <Flex justify='center'>
+                  <Text type='secondary'>First time user?<Link href='/register'> Click here to Sign up</Link></Text>
+                </Flex>
+              </Form.Item>
+            </Form>
+          </ConfigProvider>
         </div>
     </>
   )

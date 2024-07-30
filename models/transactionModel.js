@@ -7,6 +7,11 @@ const transactionSchema = new mongoose.Schema(
       required: [true, "Amount should be specified"],
     },
 
+    type: {
+      type: String,
+      required: [true, "Type is required"],
+    },
+
     category: {
       type: String,
       required: [true, "Category is not mentioned"],
