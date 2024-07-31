@@ -2,6 +2,11 @@ const mongoose = require("mongoose");
 
 const transactionSchema = new mongoose.Schema(
   {
+    userID: {
+      type: String,
+      required: true,
+    },
+
     amount: {
       type: Number,
       required: [true, "Amount should be specified"],
@@ -30,3 +35,4 @@ const transactionSchema = new mongoose.Schema(
 );
 
 const transactionModel = mongoose.model("transactions", transactionSchema);
+module.exports = transactionModel;
