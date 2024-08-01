@@ -15,37 +15,41 @@ import {
   ConfigProvider,
   message,
   Modal,
-  Space,
   Typography,
   Table,
 } from "antd";
 
-const { Text, Link, Title } = Typography;
+const { RangePicker } = DatePicker;
+const { Text, Title } = Typography;
 
 const Home = () => {
   const [allTransactions, setAllTransactions] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [frequency, setFrequency] = useState("all");
+  const [rangeDate, setRangeDate] = useState([]);
+  const [type, setType] = useState("all");
 
   const columns = [
     {
       title: "Amount",
-      dataIndex: 'amount',
+      dataIndex: "amount",
     },
     {
       title: "Type",
-      dataIndex: 'type',
+      dataIndex: "type",
     },
     {
       title: "Category",
-      dataIndex: 'category',
+      dataIndex: "category",
     },
     {
       title: "Description",
-      dataIndex: 'description',
+      dataIndex: "description",
     },
     {
       title: "Date",
-      dataIndex: 'date',
+      dataIndex: "date",
+      render: (text) => dayjs(text).format("DD-MMM-YYYY"),
     },
   ];
 
@@ -57,22 +61,24 @@ const Home = () => {
     setIsModalOpen(false);
   };
 
-  const retrieveAll = async () => {
-    try {
-      const user = JSON.parse(localStorage.getItem("user"));
-      const res = await axios.post("/transactions/get-transaction", {
-        userID: user._id,
-      });
-      setAllTransactions(res.data);
-    } catch (error) {
-      console.log(error);
-      message.error("Issue retrieving transactions");
-    }
-  };
-
   useEffect(() => {
+    const retrieveAll = async () => {
+      try {
+        const user = JSON.parse(localStorage.getItem("user"));
+        const res = await axios.post("/transactions/get-transaction", {
+          userID: user._id,
+          frequency,
+          rangeDate,
+          type,
+        });
+        setAllTransactions(res.data);
+      } catch (error) {
+        console.log(error);
+        message.error("Issue retrieving transactions");
+      }
+    };
     retrieveAll();
-  }, []);
+  }, [frequency, rangeDate, type]);
 
   const handleSubmit = async (values) => {
     try {
@@ -80,11 +86,10 @@ const Home = () => {
 
       const formattedVals = {
         ...values,
-        date: dayjs(values.date).format("DD-MMM-YYYY"),
         userID: user._id,
       };
 
-      await axios.post("/transactions/add-transaction", formattedVals)
+      await axios.post("/transactions/add-transaction", formattedVals);
       message.success("Transaction Added");
       setIsModalOpen(false);
     } catch (error) {
@@ -98,19 +103,105 @@ const Home = () => {
       <div className="filters"></div>
       <div className="base">
         <Row>
-          <Col span={8} offset={8}>
-          <div style={{border: "2px solid gray", boxShadow: "0px 0px 5px 0 #0F110C", padding: "15px", borderRadius: "10px", backgroundColor: "white"}}>
+          <Col span={16} offset={4}>
+            <div
+              style={{
+                border: "2px solid gray",
+                boxShadow: "0px 0px 3px 0 #0F110C",
+                padding: "15px",
+                borderRadius: "10px",
+                backgroundColor: "white",
+              }}
+            >
               <Title
                 level={2}
-                style={{ textAlign: "center", textDecoration: "underline", color: "#4B7F52" }}
+                style={{
+                  textAlign: "center",
+                  textDecoration: "underline",
+                  color: "#4B7F52",
+                }}
               >
                 Your Transactions
               </Title>
               <Flex justify="space-between">
-                <Text strong>Apply Filters</Text>
-                <Button type="primary" ghost shape="round" onClick={showModal}>
-                  Add Transaction
-                </Button>
+                <Flex vertical>
+                  <Text strong className="me-2 mb-2">
+                    Date Filters
+                  </Text>
+                  <Flex vertical>
+                    <Select
+                      placeholder="Select Filter"
+                      style={{ width: 150 }}
+                      value={frequency}
+                      onChange={(values) => setFrequency(values)}
+                      options={[
+                        {
+                          value: "all",
+                          label: "All",
+                        },
+                        {
+                          value: "7",
+                          label: "Last Week",
+                        },
+                        {
+                          value: "30",
+                          label: "Last Month",
+                        },
+                        {
+                          value: "365",
+                          label: "Last Year",
+                        },
+                        {
+                          value: "custom",
+                          label: "Custom",
+                        },
+                      ]}
+                    ></Select>
+                    {frequency === "custom" && (
+                      <RangePicker
+                        value={rangeDate}
+                        onChange={(values) => setRangeDate(values)}
+                      />
+                    )}
+                  </Flex>
+                </Flex>
+                <Flex vertical>
+                  <Text strong className="me-2 mb-2">
+                    Type Filter
+                  </Text>
+                  <Flex align="end">
+                    <Select
+                      placeholder="Select Type"
+                      value={type}
+                      onChange={(values) => setType(values)}
+                      options={[
+                        {
+                          value: "all",
+                          label: "All",
+                        },
+                        {
+                          value: "Expense",
+                          label: "Expense",
+                        },
+                        {
+                          value: "Income",
+                          label: "Income",
+                        },
+                      ]}
+                      style={{ width: 150 }}
+                    ></Select>
+                  </Flex>
+                </Flex>
+                <Flex align="end">
+                  <Button
+                    type="primary"
+                    ghost
+                    shape="round"
+                    onClick={showModal}
+                  >
+                    Add Transaction
+                  </Button>
+                </Flex>
               </Flex>
             </div>
             <Modal
@@ -191,6 +282,10 @@ const Home = () => {
                         label: "Bills",
                       },
                       {
+                        value: "Expenses",
+                        label: "Expenses",
+                      },
+                      {
                         value: "College",
                         label: "College",
                       },
@@ -205,11 +300,7 @@ const Home = () => {
                     ]}
                   />
                 </Form.Item>
-                <Form.Item
-                  label="Description"
-                  name={"description"}
-                  rules={[{ required: true, message: "Specify description" }]}
-                >
+                <Form.Item label="Description" name={"description"}>
                   <Input type="text" autoComplete="off" allowClear="true" />
                 </Form.Item>
                 <Form.Item
@@ -234,10 +325,17 @@ const Home = () => {
             </Modal>
           </Col>
         </Row>
-        <br/> <br/>
+        <br /> <br />
         <Row>
           <Col span={16} offset={4}>
-            <Table columns={columns} dataSource={allTransactions} bordered />
+            <Table
+              columns={columns}
+              dataSource={allTransactions}
+              bordered
+              style={{ boxShadow: "0px 0px 5px 0 #0F110C" }}
+              pagination={{ pageSize: 10 }}
+              scroll={{ y: 200 }}
+            />
           </Col>
         </Row>
       </div>
