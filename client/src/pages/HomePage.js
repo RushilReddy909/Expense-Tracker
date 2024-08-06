@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Layout from "../components/layouts/Layout";
 import axios from "axios";
 import dayjs from "dayjs";
+import { UnorderedListOutlined, AreaChartOutlined } from "@ant-design/icons";
 import {
   Form,
   Input,
@@ -17,7 +18,9 @@ import {
   Modal,
   Typography,
   Table,
+  Tooltip,
 } from "antd";
+import Analytics from "../components/Analytics";
 
 const { RangePicker } = DatePicker;
 const { Text, Title } = Typography;
@@ -28,6 +31,7 @@ const Home = () => {
   const [frequency, setFrequency] = useState("all");
   const [rangeDate, setRangeDate] = useState([]);
   const [type, setType] = useState("all");
+  const [handleData, setHandleData] = useState("table");
 
   const columns = [
     {
@@ -123,10 +127,10 @@ const Home = () => {
               >
                 Your Transactions
               </Title>
-              <Flex justify="space-between">
+              <Flex justify="space-between" wrap gap={"middle"}>
                 <Flex vertical>
                   <Text strong className="me-2 mb-2">
-                    Date Filters
+                    Date Filter
                   </Text>
                   <Flex vertical>
                     <Select
@@ -197,6 +201,7 @@ const Home = () => {
                     type="primary"
                     ghost
                     shape="round"
+                    size="large"
                     onClick={showModal}
                   >
                     Add Transaction
@@ -328,14 +333,38 @@ const Home = () => {
         <br /> <br />
         <Row>
           <Col span={16} offset={4}>
-            <Table
-              columns={columns}
-              dataSource={allTransactions}
-              bordered
-              style={{ boxShadow: "0px 0px 5px 0 #0F110C" }}
-              pagination={{ pageSize: 10 }}
-              scroll={{ y: 200 }}
-            />
+            <Flex justify="end">
+              <div className="data-icons">
+                <Tooltip title="Tabular View" color="blue">
+                  <UnorderedListOutlined
+                    className={`me-2 ${
+                      handleData === "table" ? "active-icon" : "inactive-icon"
+                    }`}
+                    onClick={() => setHandleData("table")}
+                  />
+                </Tooltip>
+                <Tooltip title="Graphical View" color="blue">
+                  <AreaChartOutlined
+                    className={`ms-2 ${
+                      handleData === "graph" ? "active-icon" : "inactive-icon"
+                    }`}
+                    onClick={() => setHandleData("graph")}
+                  />
+                </Tooltip>
+              </div>
+            </Flex>
+            {handleData === "table" ? (
+              <Table
+                columns={columns}
+                dataSource={allTransactions}
+                bordered
+                style={{ boxShadow: "0px 0px 5px 0 #0F110C" }}
+                pagination={{ pageSize: 10 }}
+                scroll={{ y: 200 }}
+              />
+            ) : (
+              <Analytics transactions={allTransactions} />
+            )}
           </Col>
         </Row>
       </div>
