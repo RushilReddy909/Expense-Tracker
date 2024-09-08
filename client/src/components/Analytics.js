@@ -3,6 +3,17 @@ import { Progress, Flex, Card, Tooltip, Typography } from "antd";
 const { Text, Title } = Typography;
 
 const Analytics = ({ transactions }) => {
+  const categories = [
+    "Food",
+    "Rent",
+    "Friend",
+    "Bills",
+    "Expenses",
+    "College",
+    "Medical",
+    "Misc",
+  ];
+
   //Filtering for progress bars
   const totalTransactions = transactions.length;
   const totalIncome = transactions.filter(
@@ -15,9 +26,7 @@ const Analytics = ({ transactions }) => {
   const incomePercent = Math.floor(
     (totalIncome.length / totalTransactions) * 100
   );
-  const expensePercent = Math.floor(
-    (totalExpense.length / totalTransactions) * 100
-  );
+  const expensePercent = 100 - incomePercent;
 
   //Money Calculation
   const totalMoney = transactions.reduce(
@@ -81,16 +90,63 @@ const Analytics = ({ transactions }) => {
         </Card>
       </Flex>
       <br />
+      <Flex justify="space-evenly" wrap gap={"middle"}>
+        <Card title="Category-wise Income" hoverable style={{ width: 350 }}>
+          {categories.map((category) => {
+            const amount = transactions
+              .filter(
+                (transaction) =>
+                  transaction.type === "Income" &&
+                  transaction.category === category
+              )
+              .reduce((acc, transaction) => acc + transaction.amount, 0);
+            return (
+              amount > 0 && (
+                <div>
+                  <Title level={4}>{category}</Title>
+                  <Progress
+                    percent={((amount / incomeMoney) * 100).toFixed(0)}
+                  />
+                </div>
+              )
+            );
+          })}
+        </Card>
+        <Card title="Category-wise Expense" hoverable style={{ width: 350 }}>
+          {categories.map((category) => {
+            const amount = transactions
+              .filter(
+                (transaction) =>
+                  transaction.type === "Expense" &&
+                  transaction.category === category
+              )
+              .reduce((acc, transaction) => acc + transaction.amount, 0);
+            return (
+              amount > 0 && (
+                <div>
+                  <Title level={4}>{category}</Title>
+                  <Progress
+                    percent={((amount / expenseMoney) * 100).toFixed(0)}
+                  />
+                </div>
+              )
+            );
+          })}
+        </Card>
+      </Flex>
+      <br />
       <Flex justify="center" align="center">
         <Card hoverable style={{ width: 400 }}>
-            <Flex justify="center" align="center" vertical>
-                <Title level={4}>
-                    Total Income : <span style={{color: "#2CC900"}}>{incomeMoney}</span>
-                </Title>
-                <Title level={4}>
-                    Total Expenditure : <span style={{color: "red"}}>{expenseMoney}</span>
-                </Title>
-            </Flex>
+          <Flex justify="center" align="center" vertical>
+            <Title level={4}>
+              Total Income :{" "}
+              <span style={{ color: "#2CC900" }}>{incomeMoney}</span>
+            </Title>
+            <Title level={4}>
+              Total Expenditure :{" "}
+              <span style={{ color: "red" }}>{expenseMoney}</span>
+            </Title>
+          </Flex>
         </Card>
       </Flex>
     </div>
