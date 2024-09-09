@@ -9,7 +9,7 @@ const retrieveAll = async (req, res) => {
     if (frequency !== "all" && frequency !== "custom") {
       const frequencyNumber = Number(frequency);
 
-      //Verify if given frequency is valid 
+      //Verify if given frequency is valid
       if (isNaN(frequencyNumber)) {
         return res.status(400).json({ error: "Invalid frequency value" });
       }
@@ -34,9 +34,9 @@ const retrieveAll = async (req, res) => {
       //$gte for >=, similarly lte
       query.date = { $gte: startDate, $lte: endDate };
     }
-    
-    //Type filter 
-    if(type !== "all") {
+
+    //Type filter
+    if (type !== "all") {
       query.type = type;
     }
 
@@ -60,4 +60,32 @@ const addTransaction = async (req, res) => {
   }
 };
 
-module.exports = { retrieveAll, addTransaction };
+const deleteTransaction = async (req, res) => {
+  try {
+    await transactionModel.findOneAndDelete({ _id: req.body.transactionID });
+    res.status(200).send("Transaction Deleted");
+  } catch (error) {
+    console.log(error);
+    res.status(500).json(error);
+  }
+};
+
+const editTransaction = async (req, res) => {
+  try {
+    await transactionModel.findOneAndUpdate(
+      { _id: req.body.transactionID },
+      req.body.payload
+    );
+    res.status(200).send("Edit Successful");
+  } catch (error) {
+    console.log(error);
+    res.status(500).json(error);
+  }
+};
+
+module.exports = {
+  retrieveAll,
+  addTransaction,
+  editTransaction,
+  deleteTransaction,
+};

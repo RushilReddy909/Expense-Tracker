@@ -1,6 +1,6 @@
-import { Schema, model } from "mongoose";
+const mongoose = require("mongoose");
 
-const transactionSchema = new Schema(
+const transactionSchema = new mongoose.Schema(
   {
     userID: {
       type: String,
@@ -34,5 +34,5 @@ const transactionSchema = new Schema(
   { timestamps: true }
 );
 
-const transactionModel = model("transactions", transactionSchema);
-export default transactionModel;
+const transactionModel = mongoose.model("transactions", transactionSchema);
+module.exports = transactionModel;

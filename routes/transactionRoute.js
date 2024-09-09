@@ -1,12 +1,13 @@
 const express = require("express");
-const {
-  retrieveAll,
-  addTransaction,
-} = require("../controllers/transactionControl");
+const { retrieveAll, addTransaction, editTransaction, deleteTransaction } = require("../controllers/transactionControl");
 
 const router = express.Router();
 
 router.post("/add-transaction", addTransaction);
+
+router.post("/edit-transaction", editTransaction);
+
+router.post("/del-transaction", deleteTransaction);
 
 router.post("/get-transaction", retrieveAll);
 

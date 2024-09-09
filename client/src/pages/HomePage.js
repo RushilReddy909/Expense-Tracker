@@ -2,7 +2,12 @@ import React, { useEffect, useState } from "react";
 import Layout from "../components/layouts/Layout";
 import axios from "axios";
 import dayjs from "dayjs";
-import { UnorderedListOutlined, AreaChartOutlined } from "@ant-design/icons";
+import {
+  UnorderedListOutlined,
+  AreaChartOutlined,
+  EditFilled,
+  DeleteFilled,
+} from "@ant-design/icons";
 import {
   Form,
   Input,
@@ -32,6 +37,19 @@ const Home = () => {
   const [rangeDate, setRangeDate] = useState([]);
   const [type, setType] = useState("all");
   const [handleData, setHandleData] = useState("table");
+  const [editable, setEditable] = useState(null);
+
+  const delRecord = async (record) => {
+    try {
+      await axios.post("/api/v1/transactions/del-transaction", {
+        transactionID: record._id,
+      });
+      message.success("Transaction Deleted");
+    } catch (error) {
+      console.log(error);
+      message.error("Error deleting transaction");
+    }
+  };
 
   const columns = [
     {
@@ -55,6 +73,37 @@ const Home = () => {
       dataIndex: "date",
       render: (text) => dayjs(text).format("DD-MMM-YYYY"),
     },
+    {
+      title: "Actions",
+      render: (text, record) => (
+        <Flex
+          className="icons"
+          justify="space-evenly"
+          align="center"
+          style={{ fontSize: "1.4rem" }}
+        >
+          <div>
+            <EditFilled
+              style={{ color: "#3faceb" }}
+              className="mx-1"
+              onClick={() => {
+                setEditable(record);
+                setIsModalOpen(true);
+              }}
+            />
+          </div>
+          <div>
+            <DeleteFilled
+              className="mx-1"
+              style={{ color: "#fc2121" }}
+              onClick={() => {
+                delRecord(record);
+              }}
+            />
+          </div>
+        </Flex>
+      ),
+    },
   ];
 
   const showModal = () => {
@@ -69,7 +118,7 @@ const Home = () => {
     const retrieveAll = async () => {
       try {
         const user = JSON.parse(localStorage.getItem("user"));
-        const res = await axios.post("/transactions/get-transaction", {
+        const res = await axios.post("/api/v1/transactions/get-transaction", {
           userID: user._id,
           frequency,
           rangeDate,
@@ -88,14 +137,27 @@ const Home = () => {
     try {
       const user = JSON.parse(localStorage.getItem("user"));
 
-      const formattedVals = {
-        ...values,
-        userID: user._id,
-      };
+      if (editable) {
+        await axios.post("/api/v1/transactions/edit-transaction", {
+          payload: {
+            ...values,
+            userID: user._id,
+          },
+          transactionID: editable._id,
+        });
+        message.success("Transaction Updated");
+      } else {
+        const formattedVals = {
+          ...values,
+          userID: user._id,
+        };
 
-      await axios.post("/transactions/add-transaction", formattedVals);
-      message.success("Transaction Added");
+        await axios.post("/api/v1/transactions/add-transaction", formattedVals);
+        message.success("Transaction Added");
+      }
+
       setIsModalOpen(false);
+      setEditable(null);
     } catch (error) {
       message.error("Failed to add Transaction");
       console.log(error);
@@ -211,12 +273,19 @@ const Home = () => {
             </div>
             <Modal
               centered
-              title="Add Transaction"
+              title={editable ? "Edit Transaction" : "Add Transaction"}
               open={isModalOpen}
               onCancel={handleCancel}
               footer={null}
             >
-              <Form layout="vertical" onFinish={handleSubmit}>
+              <Form
+                layout="vertical"
+                onFinish={handleSubmit}
+                initialValues={{
+                  ...editable,
+                  date: editable?.date ? dayjs(editable.date) : null,
+                }}
+              >
                 <ConfigProvider
                   theme={{
                     components: {
@@ -323,7 +392,7 @@ const Home = () => {
                     htmlType="submit"
                     size="large"
                   >
-                    Add
+                    {editable ? "Edit" : "Add"}
                   </Button>
                 </Flex>
               </Form>
@@ -358,9 +427,9 @@ const Home = () => {
                 columns={columns}
                 dataSource={allTransactions}
                 bordered
+                size="large"
                 style={{ boxShadow: "0px 0px 5px 0 #0F110C" }}
-                pagination={{ pageSize: 10 }}
-                scroll={{ y: 200 }}
+                pagination={{ pageSize: 5 }}
               />
             ) : (
               <Analytics transactions={allTransactions} />
