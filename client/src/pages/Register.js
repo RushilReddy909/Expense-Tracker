@@ -42,69 +42,86 @@ const Register = () => {
   return (
     <>
       <div className="register">
-        <ConfigProvider
-          theme={{
-            components: {
-              Form: {
-                /* here is your component tokens */
-                labelFontSize: 16,
-              },
-            },
-          }}
-        >
-          <Form layout="vertical" onFinish={submitHandler} className="p-3">
-            <h1>
-              <b>Registration</b>
-            </h1>
-            <Form.Item
-              label="Username"
-              name="name"
-              rules={[{ required: true, message: "Enter your Username" }]}
+        <Flex justify="center" className="registerFlex">
+          <div style={{ width: "50%" }}>
+            <ConfigProvider
+              theme={{
+                components: {
+                  Form: {
+                    /* here is your component tokens */
+                    labelFontSize: 16,
+                  },
+                },
+              }}
             >
-              <Space.Compact block>
-                <Input type="text" size="large" />
-                <Button icon={<UserOutlined />} size="large" />
-              </Space.Compact>
-            </Form.Item>
-            <Form.Item
-              label="Email"
-              name="email"
-              rules={[{ required: true, message: "Please enter your email" }]}
-            >
-              <Space.Compact block>
-                <Input type="email" size="large" />
-                <Button icon={<MailOutlined />} size="large" />
-              </Space.Compact>
-            </Form.Item>
-            <Form.Item
-              label="Password"
-              name="password"
-              rules={[
-                { required: true, message: "Please enter your Password" },
-              ]}
-            >
-              <Input.Password size="large" />
-            </Form.Item>
-            <FormItem className="mt-3">
-              <Flex justify="center">
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  block
-                  style={{ fontWeight: "bold" }}
+              <Flex style={{height: "100%"}} justify="center" align="center">
+              <Form layout="vertical" onFinish={submitHandler} className="p-3">
+                <h1>
+                  <b>Registration</b>
+                </h1>
+                <Form.Item
+                  label="Username"
+                  name="name"
+                  rules={[{ required: true, message: "Enter your Username" }]}
                 >
-                  Register
-                </Button>
+                  <Space.Compact block>
+                    <Input type="text" size="large" />
+                    <Button icon={<UserOutlined />} size="large" />
+                  </Space.Compact>
+                </Form.Item>
+                <Form.Item
+                  label="Email"
+                  name="email"
+                  rules={[
+                    { required: true, message: "Please enter your email" },
+                  ]}
+                >
+                  <Space.Compact block>
+                    <Input type="email" size="large" />
+                    <Button icon={<MailOutlined />} size="large" />
+                  </Space.Compact>
+                </Form.Item>
+                <Form.Item
+                  label="Password"
+                  name="password"
+                  rules={[
+                    { required: true, message: "Please enter your Password" },
+                  ]}
+                >
+                  <Input.Password size="large" />
+                </Form.Item>
+                <FormItem className="mt-3">
+                  <Flex justify="center">
+                    <Button
+                      type="primary"
+                      htmlType="submit"
+                      shape="round"
+                      block
+                      style={{ fontWeight: "bold" }}
+                    >
+                      Register
+                    </Button>
+                  </Flex>
+                </FormItem>
+                <Flex justify="center">
+                  <Text type="secondary">
+                    Already have an account?
+                    <Link href="/login"> Click here to Login</Link>
+                  </Text>
+                </Flex>
+              </Form>
               </Flex>
-            </FormItem>
-            <Flex justify="center">
-              <Text type="secondary">
-                Already have an account?
-                <Link href="/login"> Click here to Login</Link>
-              </Text>
-            </Flex>
-          </Form>
-        </ConfigProvider>
+            </ConfigProvider>
+          </div>
+          <div style={{ width: "50%" }}>
+            <img
+              src="https://a.storyblok.com/f/188325/1460x820/af7cf054d5/managing-business-travel-expenses.png"
+              width={"100%"}
+              height={"100%"}
+              alt="template-image"
+            />
+          </div>
+        </Flex>
       </div>
     </>
   );

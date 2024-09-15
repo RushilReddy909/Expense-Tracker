@@ -25,7 +25,7 @@ const Header = () => {
     <div className="header">
       <Flex justify="center" vertical>
         <Flex vertical align="center">
-          <Avatar size={128} icon={<UserOutlined />} className="mb-3" />
+          <Avatar size={128} style={{backgroundColor: "#2ec958", color: "black"}} icon={<UserOutlined />} className="mb-3" />
           <Title style={{ margin: 0 }} level={3}>
             {loginUser.name}
           </Title>
@@ -36,7 +36,7 @@ const Header = () => {
           <ul>
             <li>
               <HomeFilled />
-              <Link href="/" className="mx-2 link">Dashboard</Link>
+              <Link to="/" className="mx-2 link">Dashboard</Link>
             </li>
           </ul>
         </Flex>
