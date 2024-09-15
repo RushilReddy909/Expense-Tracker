@@ -1,17 +1,16 @@
-import React from 'react';
-import Header from './Header';
-import Footer from './Footer';
+import React from "react";
+import Header from "./Header";
+import { Flex } from "antd";
 
-const Layout = ({children}) => {
+const Layout = ({ children }) => {
   return (
     <>
-        <Header/>
-        <div className='main p-4'>
-            {children}
-        </div>
-        <Footer />
+      <Flex>
+        <Header />
+        <div className="main p-4">{children}</div>
+      </Flex>
     </>
-  )
-}
+  );
+};
 
-export default Layout
+export default Layout;
