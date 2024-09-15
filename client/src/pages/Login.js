@@ -21,7 +21,7 @@ const Login = () => {
 
   const submitHandler = async (values) => {
     try {
-      const { data } = await axios.post("/users/login", values);
+      const { data } = await axios.post("/api/v1/users/login", values);
 
       if (data.success) {
         message.success("Login Successful");

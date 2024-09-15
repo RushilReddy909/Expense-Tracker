@@ -21,7 +21,7 @@ const Register = () => {
 
   const submitHandler = async (values) => {
     try {
-      const response = await axios.post("/users/register", values);
+      const response = await axios.post("/api/v1/users/register", values);
 
       if (response.data.success) {
         message.success("Registration Successful");

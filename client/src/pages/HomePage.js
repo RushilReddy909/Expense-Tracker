@@ -41,7 +41,7 @@ const Home = () => {
 
   const delRecord = async (record) => {
     try {
-      await axios.post("/transactions/del-transaction", {
+      await axios.post("/api/v1/transactions/del-transaction", {
         transactionID: record._id,
       });
       message.success("Transaction Deleted");
@@ -123,7 +123,7 @@ const Home = () => {
     const retrieveAll = async () => {
       try {
         const user = JSON.parse(localStorage.getItem("user"));
-        const res = await axios.post("/transactions/get-transaction", {
+        const res = await axios.post("/api/v1/transactions/get-transaction", {
           userID: user._id,
           frequency,
           rangeDate,
@@ -143,7 +143,7 @@ const Home = () => {
       const user = JSON.parse(localStorage.getItem("user"));
 
       if (editable) {
-        await axios.post("/transactions/edit-transaction", {
+        await axios.post("/api/v1/transactions/edit-transaction", {
           payload: {
             ...values,
             userID: user._id,
@@ -157,7 +157,7 @@ const Home = () => {
           userID: user._id,
         };
 
-        await axios.post("/transactions/add-transaction", formattedVals);
+        await axios.post("/api/v1/transactions/add-transaction", formattedVals);
         message.success("Transaction Added");
         reloadPage();
       }
